@@ -12,8 +12,12 @@
   "dependencies": {
     "bower": "^1.8.2",
     "ejs": "^2.5.7",
-    "express": "^4.16.2",
     "mysql": "^2.15.0",
     "sjs": "0.0.3"
+  },
+  "devDependencies": {
+    "express": "^4.16.2",
+    "http": "0.0.0",
+    "socket.io": "^2.0.4"
   }
 }

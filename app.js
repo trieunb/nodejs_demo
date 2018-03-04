@@ -2,6 +2,8 @@ var express		=	require('express');
 var path		=	require('path');
 var bodyParser	=	require('body-parser');
 var mysql 		= 	require('mysql');
+var io 			= 	require('socket.io');
+
 var events = require('events');
 var eventEmitter = new events.EventEmitter();
 
@@ -54,12 +56,21 @@ app.get('/phones', function(req, res) {
 
 app.get('/message/:phoneId', function(req, res) {
 	var phone 	=	req.params.phoneId;
-	console.log(phone)
 	res.render('message', {
 		phone : phone
 	});
 });
 
-app.listen(8081, function() {
-	console.log('Hello express');
+// app.listen(8081, function() {
+// 	console.log('Hello express');
+// });
+// io.listen(app.listen(8081));
+var io = require('socket.io').listen(app.listen(8081));
+// khởi tạo kết nối socket
+io.sockets.on('connection', function(socket) {
+	socket.broadcast.emit('hi');
+    // socket.emit('chat message', { message: 'welcome to the chat' });
+	socket.on('chat message', function(msg){
+		io.emit('chat message', msg);
+	});
 });
