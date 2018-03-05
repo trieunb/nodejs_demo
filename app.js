@@ -16,6 +16,8 @@ var app			=	express();
 
 app.use(bodyParser());
 // app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'controllers')));
+app.use(express.static(path.join(__dirname, 'models')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.set('view engine', 'ejs');
