@@ -21,7 +21,7 @@
 			<h2>Phone List</h2>
 			<ul class="list-group">
 				<% for (var i = 0; i < phones.length; i++) { %>
-					<li class="list-group-item phone" onClick="getMessage(<%= phones[i].user_id %>)"><%= phones[i].user_id %></li>
+					<li class="list-group-item phone" onClick="getMessage('<%= phones[i].user_id %>')"><%= phones[i].user_id %></li>
 				<% } %>
 			</ul>
 		</div>

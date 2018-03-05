@@ -13,7 +13,11 @@
     </style>
   </head>
   <body>
-    <ul id="messages"></ul>
+    <ul id="messages">
+      <% for (var i = 0; i < mess.length; i++) { %>
+      <li><%= mess[i].content %></li>
+      <% } %>
+    </ul>
     <form action="">
       <input id="m" autocomplete="off" />
       <button>Send</button>
