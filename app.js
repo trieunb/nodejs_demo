@@ -33,21 +33,19 @@ app.get('/login', function(req, res) {
 
 app.post('/login', function(req, res) {
 	var phone	=	req.body.phone;
-	console.log(phone);
-	if (phone !== '') {
-		res.redirect('/phones');
-	}
-	res.redirect('/login');
-})
+	con.query("SELECT * FROM tb_user WHERE user_id = '"+phone+"'", function (err, result, fields) {
+	    if (err) throw err;
+	    console.log(result.length)
+	    if (result.length != 0 && result[0].user_id !== '') {
+			return res.redirect('/phones');
+		}
+		res.redirect('/login');
+	});
+});
 
 app.get('/phones', function(req, res) {
 	con.query("SELECT * FROM tb_user", function (err, result, fields) {
 	    if (err) throw err;
-	    console.log(result);
-		var phones = [
-			{user_id : '01649214266'},
-			{user_id : '0905242897'}
-		];
 		res.render('phone', {
 			phones : result
 		});
