@@ -53,8 +53,9 @@ app.post('/login', function(req, res) {
 });
 
 app.get('/phones', function(req, res) {
-	var sql = "SELECT * FROM tb_user";
-	con.query(sql, function (err, result, fields) {
+	var phone_login	=	[sess.user];
+	var sql 		= "SELECT * FROM tb_user WHERE NOT user_id = ?";
+	con.query(sql, [phone_login], function (err, result, fields) {
 	    if (err) throw err;
 		res.render('phone', {
 			phones : result
@@ -69,7 +70,9 @@ app.get('/message/:phoneId', function(req, res) {
 	con.query(sql, [phone, phone_login, phone_login, phone], function (err, result, fields) {
 	    if (err) throw err;
 		res.render('message', {
-			mess : result
+			mess 			: result,
+			user_own 		: phone_login,
+			user_receive	: phone
 		});
 	});
 });
@@ -83,7 +86,13 @@ var io = require('socket.io').listen(app.listen(8081));
 io.sockets.on('connection', function(socket) {
 	socket.broadcast.emit('hi');
     // socket.emit('chat message', { message: 'welcome to the chat' });
-	socket.on('chat message', function(msg){
-		io.emit('chat message', msg);
+	socket.on('chat message', function(data){
+		var values = [[data.user_own, data.user_receive, data.msg]];
+		var sql = "INSERT INTO tb_message (user_own, user_receive, content) VALUES ?";
+		con.query(sql, [values], function (err, result) {
+    		if (err) throw err;
+    		console.log("Number of records inserted: " + result.affectedRows);
+  		});
+		io.emit('chat message', data.msg);
 	});
 });
