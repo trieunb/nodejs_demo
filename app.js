@@ -66,8 +66,8 @@ app.get('/phones', function(req, res) {
 app.get('/message/:phoneId', function(req, res) {
 	var phone 		=	req.params.phoneId;
 	var phone_login	=	sess.user;
-	var sql = 'SELECT * FROM tb_message WHERE (user_own = ? AND user_receive = ?) OR (user_own = ? AND user_receive = ?)';
-	con.query(sql, [phone, phone_login, phone_login, phone], function (err, result, fields) {
+	var sql = 'SELECT * FROM tb_message WHERE (user_own = ? OR user_own = ?) AND (user_receive = ? OR user_receive = ?)';
+	con.query(sql, [phone_login, phone, phone, phone_login], function (err, result, fields) {
 	    if (err) throw err;
 		res.render('message', {
 			mess 			: result,
