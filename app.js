@@ -54,9 +54,10 @@ app.post('/login', function(req, res) {
 
 app.get('/phones', function(req, res) {
 	var phone_login	=	[sess.user];
-	var sql 		= "SELECT * FROM tb_user LEFT JOIN tb_message ON (user_id = user_receive) WHERE NOT user_id = ?";
+	var sql 		= "SELECT * FROM tb_user LEFT JOIN tb_message ON (user_id = user_own) WHERE NOT user_id = ?";
 	con.query(sql, [phone_login], function (err, result, fields) {
 	    if (err) throw err;
+	    console.log(result)
 	    obj = removeDuplicates(result, 'user_id')
 		console.log(obj)					
 		res.render('phone', {
