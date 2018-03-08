@@ -54,11 +54,13 @@ app.post('/login', function(req, res) {
 
 app.get('/phones', function(req, res) {
 	var phone_login	=	[sess.user];
-	var sql 		= "SELECT * FROM tb_user WHERE NOT user_id = ?";
+	var sql 		= "SELECT * FROM tb_user LEFT JOIN tb_message ON (user_id = user_receive) WHERE NOT user_id = ?";
 	con.query(sql, [phone_login], function (err, result, fields) {
 	    if (err) throw err;
+	    obj = removeDuplicates(result, 'user_id')
+		console.log(obj)					
 		res.render('phone', {
-			phones : result
+			phones : obj
 		});
 	});
 });
@@ -76,6 +78,20 @@ app.get('/message/:phoneId', function(req, res) {
 		});
 	});
 });
+
+function removeDuplicates(originalArray, prop) {
+     var newArray = [];
+     var lookupObject  = {};
+
+     for(var i in originalArray) {
+        lookupObject[originalArray[i][prop]] = originalArray[i];
+     }
+
+     for(i in lookupObject) {
+         newArray.push(lookupObject[i]);
+     }
+      return newArray;
+ }
 
 // app.listen(8081, function() {
 // 	console.log('Hello express');

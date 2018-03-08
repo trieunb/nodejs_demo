@@ -20,8 +20,13 @@
 		<div class="container">
 			<h2>Phone List</h2>
 			<ul class="list-group">
-				<% for (var i = 0; i < phones.length; i++) { %>
-					<li class="list-group-item phone" onClick="getMessage('<%= phones[i].user_id %>')"><%= phones[i].user_id %></li>
+				<% for (var i = 0; i < (phones.length); i++) { %>
+					<% var user = phones[i].user_id %>
+					<% var msg = phones[i].content %>
+					<li class="list-group-item phone" onClick="getMessage('<%= user %>')">
+						<span><%= user %></span><br>
+						<span><%= msg %></span>
+					</li>
 				<% } %>
 			</ul>
 		</div>
