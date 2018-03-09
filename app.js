@@ -110,6 +110,6 @@ io.sockets.on('connection', function(socket) {
     		if (err) throw err;
     		console.log("Number of records inserted: " + result.affectedRows);
   		});
-		io.emit('chat message', data.msg);
+		io.emit('received message', data.msg);
 	});
 });
