@@ -105,6 +105,7 @@ function removeDuplicates(originalArray, prop) {
 var io = require('socket.io').listen(app.listen(8081));
 // khởi tạo kết nối socket
 io.sockets.on('connection', function(socket) {
+	// var phone_login	=	req.cookies['userCookie'];
 	socket.broadcast.emit('hi');
     // socket.emit('chat message', { message: 'welcome to the chat' });
 	socket.on('chat message', function(data){
@@ -114,6 +115,6 @@ io.sockets.on('connection', function(socket) {
     		if (err) throw err;
     		console.log("Number of records inserted: " + result.affectedRows);
   		});
-		io.emit('received message', data.msg);
+		io.emit('received message', data.msg, data.user_own);
 	});
 });
