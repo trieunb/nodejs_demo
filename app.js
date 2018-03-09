@@ -3,8 +3,10 @@ var path		=	require('path');
 var bodyParser	=	require('body-parser');
 var mysql 		= 	require('mysql');
 var io 			= 	require('socket.io');
-var session = require('express-session')
-
+var session 		= require('express-session')
+var cookieParser 	= require('cookie-parser')
+var app				=	express();
+app.use(cookieParser())
 
 var events = require('events');
 var eventEmitter = new events.EventEmitter();
@@ -14,7 +16,7 @@ var con 		= 	mysql.createConnection(db);
 
 con.connect();
 
-var app			=	express();
+
 
 app.use(bodyParser());
 app.use(session({secret: 'ssshhhhh'}));
@@ -31,7 +33,7 @@ app.set('views', path.join(__dirname, 'views'));
 // route our app
 // var router = require('./config/routes');
 // app.use('/', router);
-var sess;
+// var sess;
 app.get('/login', function(req, res) {
 	res.render('login');
 	// res.send('hello, express');
@@ -44,8 +46,9 @@ app.post('/login', function(req, res) {
 	    if (err) throw err;
 	    console.log(result.length)
 	    if (result.length != 0 && result[0].user_id !== '') {
-	    	sess=req.session;
-	    	sess.user 	=	result[0].user_id;
+	    	// sess=req.session;
+	    	// sess.user 	=	result[0].user_id;
+	    	res.cookie('userCookie', result[0].user_id)
 			return res.redirect('/phones');
 		}
 		res.redirect('/login');
@@ -53,13 +56,14 @@ app.post('/login', function(req, res) {
 });
 
 app.get('/phones', function(req, res) {
-	var phone_login	=	[sess.user];
+	var phone_login	=	req.cookies['userCookie'];
 	var sql 		= "SELECT * FROM tb_user LEFT JOIN tb_message ON (user_id = user_own) WHERE NOT user_id = ?";
 	con.query(sql, [phone_login], function (err, result, fields) {
 	    if (err) throw err;
-	    console.log(result)
+	    // console.log(result)
+	    console.log(req.cookies['userCookie'])
 	    obj = removeDuplicates(result, 'user_id')
-		console.log(obj)					
+		// console.log(obj)					
 		res.render('phone', {
 			phones : obj
 		});
@@ -68,7 +72,7 @@ app.get('/phones', function(req, res) {
 
 app.get('/message/:phoneId', function(req, res) {
 	var phone 		=	req.params.phoneId;
-	var phone_login	=	sess.user;
+	var phone_login	=	req.cookies['userCookie'];
 	var sql = 'SELECT * FROM tb_message WHERE (user_own = ? OR user_own = ?) AND (user_receive = ? OR user_receive = ?)';
 	con.query(sql, [phone_login, phone, phone, phone_login], function (err, result, fields) {
 	    if (err) throw err;
