@@ -25,7 +25,7 @@
 					<% var msg = phones[i].content %>
 					<li class="list-group-item phone" onClick="getMessage('<%= user %>')">
 						<span><%= user %></span><br>
-						<span><%= msg %></span>
+						<span class="msg"><%= msg %></span>
 					</li>
 				<% } %>
 			</ul>
@@ -36,10 +36,14 @@
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 		<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 		<script>
+			var socket = io();
 			//Create an event handler:
 			function getMessage(phone) {
 				window.location.href = '/message/'+phone;
 			}
+			socket.on('received message', function(msg){
+				$('.msg').text(msg);
+			});
 			// document.querySelector('.phone').addEventListener('click', sayHello)
 		</script>
 	</body>
