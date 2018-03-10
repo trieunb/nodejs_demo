@@ -65,7 +65,8 @@ app.get('/phones', function(req, res) {
 	    obj = removeDuplicates(result, 'user_id')
 		// console.log(obj)					
 		res.render('phone', {
-			phones : obj
+			phones : obj,
+			phone : 	phone_login
 		});
 	});
 });
@@ -115,6 +116,6 @@ io.sockets.on('connection', function(socket) {
     		if (err) throw err;
     		console.log("Number of records inserted: " + result.affectedRows);
   		});
-		io.emit('received message', data.msg, data.user_own);
+		io.emit('received message', data.msg, data.user_own, data.user_receive);
 	});
 });

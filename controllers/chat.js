@@ -9,6 +9,6 @@ $('form').submit(function() {
   	$('#chat-box').val('');
   	return false;
 });
-socket.on('received message', function(msg, phone_login){
+socket.on('received message', function(msg, phone_login, user_receive){
   	$('#messages').append($('<li>').text(msg));
 });

@@ -25,7 +25,7 @@
 					<% var msg = phones[i].content %>
 					<li class="list-group-item phone" onClick="getMessage('<%= user %>')">
 						<span><%= user %></span><br>
-						<span class="msg_<%= user %>"><%= msg %></span>
+						<span class="msg_<%= user %>_<%= phone %>"><%= msg %></span>
 					</li>
 				<% } %>
 			</ul>
@@ -42,10 +42,10 @@
 			function getMessage(phone) {
 				window.location.href = '/message/'+phone;
 			}
-			socket.on('received message', function(msg, phone_login){
+			socket.on('received message', function(msg, phone_login, user_receive){
 				var user_login = document.cookie;
 				console.log(user_login)
-				$('.msg_'+phone_login).text(msg);
+				$('.msg_'+phone_login+'_'+user_receive).text(msg);
 			});
 			// document.querySelector('.phone').addEventListener('click', sayHello)
 		</script>
