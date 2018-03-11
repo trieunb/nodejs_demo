@@ -3,20 +3,15 @@ var path		=	require('path');
 var bodyParser	=	require('body-parser');
 var mysql 		= 	require('mysql');
 var io 			= 	require('socket.io');
-var session 		= require('express-session')
-var cookieParser 	= require('cookie-parser')
+var session 		= 	require('express-session')
+var cookieParser 	= 	require('cookie-parser')
 var app				=	express();
 app.use(cookieParser())
-
-var events = require('events');
-var eventEmitter = new events.EventEmitter();
 
 var db 			=	require('./config/db.js');
 var con 		= 	mysql.createConnection(db);
 
 con.connect();
-
-
 
 app.use(bodyParser());
 app.use(session({secret: 'ssshhhhh'}));
@@ -44,7 +39,7 @@ app.post('/login', function(req, res) {
 	var sql 	=	"SELECT * FROM tb_user WHERE user_id = ?";
 	con.query(sql, [phone], function (err, result, fields) {
 	    if (err) throw err;
-	    console.log(result.length)
+	    // console.log(result.length)
 	    if (result.length != 0 && result[0].user_id !== '') {
 	    	// sess=req.session;
 	    	// sess.user 	=	result[0].user_id;
@@ -114,7 +109,7 @@ io.sockets.on('connection', function(socket) {
 		var sql = "INSERT INTO tb_message (user_own, user_receive, content) VALUES ?";
 		con.query(sql, [values], function (err, result) {
     		if (err) throw err;
-    		console.log("Number of records inserted: " + result.affectedRows);
+    		// console.log("Number of records inserted: " + result.affectedRows);
   		});
 		io.emit('received message', data.msg, data.user_own, data.user_receive);
 	});
