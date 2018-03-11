@@ -11,12 +11,21 @@
       #messages { list-style-type: none; margin: 0; padding: 0; }
       #messages li { padding: 5px 10px; }
       #messages li:nth-child(odd) { background: #eee; }
+      .user_own {
+        text-align: right;
+        color: #286090;
+      }
     </style>
   </head>
   <body>
     <ul id="messages">
       <% for (var i = 0; i < mess.length; i++) { %>
-      <li><%= mess[i].content %></li>
+        <% var msg_class = '' %>
+        <% if(mess[i].user_own == user_own) { %>
+          <% msg_class = 'user_own' %>
+        <% } else { %>
+          <% msg_class = 'user_receive' } %>
+        <li class="<%= msg_class %>"><%= mess[i].content %></li>
       <% } %>
     </ul>
     <form action="">

@@ -10,5 +10,11 @@ $('form').submit(function() {
   	return false;
 });
 socket.on('received message', function(msg, phone_login, user_receive){
-  	$('#messages').append($('<li>').text(msg));
+	var msg_class = '';
+	if (phone_login == $('.user-own').val()) {
+		msg_class = 'user_own';
+	} else {
+		msg_class = 'user_receive';
+	}
+  	$('#messages').append($('<li class="'+ msg_class +'">').text(msg));
 });
