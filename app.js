@@ -44,11 +44,28 @@ app.post('/login', function(req, res) {
 	    	// sess=req.session;
 	    	// sess.user 	=	result[0].user_id;
 	    	res.cookie('userCookie', result[0].user_id)
-			return res.redirect('/phones');
+			return res.redirect('/chat');
 		}
 		res.redirect('/login');
 	});
 });
+
+app.get('/chat', function(req, res) {
+	var phone_login	=	req.cookies['userCookie'];
+	var phone 		=	"01649214266";
+	var sql 		= "SELECT * FROM tb_user " + 
+					"LEFT JOIN tb_message ON (user_id = user_own) " + 
+					"WHERE NOT user_id = ?"; 
+	var params 	=	[phone_login];
+	con.query(sql, params, function (err, result, fields) {
+	    if (err) throw err;
+	    obj = removeDuplicates(result, 'user_id')
+		res.render('chat', {
+			phones 	: obj,
+			user 	: phone_login
+		});	
+	});
+})
 
 app.get('/phones', function(req, res) {
 	var phone_login	=	req.cookies['userCookie'];
@@ -112,5 +129,16 @@ io.sockets.on('connection', function(socket) {
     		// console.log("Number of records inserted: " + result.affectedRows);
   		});
 		io.emit('received message', data.msg, data.user_own, data.user_receive);
+	});
+
+	socket.on('load message', function(data) {
+		var sql 	= "SELECT * FROM tb_message " + 
+					"WHERE (user_own = ? OR user_own = ?) " + 
+					"AND (user_receive = ? OR user_receive = ?)";
+		var params 	= [data.user, data.contact, data.contact, data.user];
+		con.query(sql, params, function (err, result) {
+    		if (err) throw err;
+			io.emit('pass message', result);
+  		});
 	});
 });
