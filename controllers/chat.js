@@ -1,7 +1,8 @@
 
 var socket = io();
 
-$(".messages").animate({ scrollTop: $(document).height() }, "fast");
+// $(".messages").animate({ scrollTop: $(document).height() }, "fast");
+$(".messages").animate({ scrollTop: $('.messages').prop("scrollHeight")}, 1000);
 
 $("#profile-img").click(function() {
   $("#status-options").toggleClass("active");
@@ -48,10 +49,9 @@ function newMessage() {
   };
   socket.emit('chat message', data);
   $('.message-input input').val(null);
-  return false;
   // $('<li class="sent"><img src="http://emilcarlsson.se/assets/mikeross.png" alt="" /><p>' + message + '</p></li>').appendTo($('.messages ul'));
   // $('.contact.active .preview').html('<span>You: </span>' + message);
-  // $(".messages").animate({ scrollTop: $(document).height() }, "fast");
+  $(".messages").animate({ scrollTop: $('.messages').prop("scrollHeight")}, 1000);
 };
 
 $('.submit').click(function() {
@@ -80,7 +80,7 @@ $('#contacts > ul > li.contact').on('click', function(e) {
     contact   :   contact
   };
   socket.emit('load message', data);
-
+  $(".messages").animate({ scrollTop: $('.messages').prop("scrollHeight")}, 1000);
   e.preventDefault();
 });
 socket.on('pass message', function(msg, user){
@@ -118,7 +118,6 @@ socket.on('received message', function(msg, phone_login, user_receive){
                   '<p>'+msg+'</p>'+
                 '</li>';
     $('.messages ul').append(html);
-    console.log(msg)
-    console.log($('.contact .pre_'+phone_login+'_'+user_receive+''))
     $('.contact .pre_'+phone_login+'_'+user_receive+'').text(msg);
+    $(".messages").animate({ scrollTop: $('.messages').prop("scrollHeight")}, 1000);
 });

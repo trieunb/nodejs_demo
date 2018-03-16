@@ -6,34 +6,41 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>login</title>
 
-		<!-- Bootstrap CSS -->
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-
-		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-		<!--[if lt IE 9]>
-			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
-			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-		<![endif]-->
+		<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+		<link rel="stylesheet" href="/css/login.css">
 	</head>
 	<body>
 		<div class="container">
-			<div class="col-sm-3 col-sm-offset-4">
-				<form action="/login" method="POST" class="form-horizontal" role="form">
-				
-					<div class="form-group">
-						<label class="sr-only" for="">label</label>
-						<input type="text" name="phone" class="form-control" id="phone" placeholder="Enter Phone">
-					</div>
-				
-					<button type="submit" class="btn btn-primary">Submit</button>
-				</form>
-			</div>
+		    <div class="row">
+		        <div class="col-md-12">
+		            <div class="pr-wrap">
+		                <div class="pass-reset">
+		                    <label>
+		                        Enter the email you signed up with</label>
+		                    <input type="email" placeholder="Email" />
+		                    <input type="submit" value="Submit" class="pass-reset-submit btn btn-success btn-sm" />
+		                </div>
+		            </div>
+		            <div class="wrap">
+		                <p class="form-title">Sign In</p>
+		                <form class="login" action="/login" method="POST" role="form">
+		                	<input type="text" placeholder="Username" id="phone" name="phone">
+		                	<!-- <input type="password" placeholder="Password" /> -->
+		                	<input type="submit" value="Sign In" class="btn btn-success btn-sm" />
+		                </form>
+		                <div class="remember-forgot">
+		                    <div class="row">
+		                        <div class="col-md-6 pull-right forgot-pass-content">
+		                            <a href="javascription:void(0)" class="forgot-pass">Forgot Password</a>
+		                        </div>
+		                    </div>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
 		</div>
-		<!-- jQuery -->
-		<script src="//code.jquery.com/jquery.js"></script>
-		<!-- Bootstrap JavaScript -->
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-		<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 	</body>
+	<script src='https://code.jquery.com/jquery-2.2.4.min.js'></script>
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+	<script src="/login.js"></script>
 </html>

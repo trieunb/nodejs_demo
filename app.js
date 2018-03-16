@@ -31,7 +31,6 @@ app.set('views', path.join(__dirname, 'views'));
 // var sess;
 app.get('/login', function(req, res) {
 	res.render('login');
-	// res.send('hello, express');
 })
 
 app.post('/login', function(req, res) {
@@ -39,10 +38,7 @@ app.post('/login', function(req, res) {
 	var sql 	=	"SELECT * FROM tb_user WHERE user_id = ?";
 	con.query(sql, [phone], function (err, result, fields) {
 	    if (err) throw err;
-	    // console.log(result.length)
 	    if (result.length != 0 && result[0].user_id !== '') {
-	    	// sess=req.session;
-	    	// sess.user 	=	result[0].user_id;
 	    	res.cookie('userCookie', result[0].user_id)
 			return res.redirect('/chat');
 		}
@@ -52,19 +48,22 @@ app.post('/login', function(req, res) {
 
 app.get('/chat', function(req, res) {
 	var phone_login	=	req.cookies['userCookie'];
-	var phone 		=	"01649214266";
 	var sql 		= "SELECT * FROM tb_user " + 
 					"LEFT JOIN tb_message ON (user_id = user_own) " + 
 					"WHERE NOT user_id = ?"; 
 	var params 	=	[phone_login];
-	con.query(sql, params, function (err, result, fields) {
-	    if (err) throw err;
-	    obj = removeDuplicates(result, 'user_id')
-		res.render('chat', {
-			phones 	: obj,
-			user 	: phone_login
-		});	
-	});
+	if (typeof phone_login !== 'undefined') {
+		con.query(sql, params, function (err, result, fields) {
+		    if (err) throw err;
+		    obj = removeDuplicates(result, 'user_id')
+			res.render('chat', {
+				phones 	: obj,
+				user 	: phone_login
+			});	
+		});
+	} else {
+		return res.redirect('/login');
+	}
 })
 
 app.get('/phones', function(req, res) {
@@ -118,7 +117,6 @@ function removeDuplicates(originalArray, prop) {
 var io = require('socket.io').listen(app.listen(8081));
 // khởi tạo kết nối socket
 io.sockets.on('connection', function(socket) {
-	// var phone_login	=	req.cookies['userCookie'];
 	socket.broadcast.emit('hi');
     // socket.emit('chat message', { message: 'welcome to the chat' });
 	socket.on('chat message', function(data){
@@ -138,7 +136,6 @@ io.sockets.on('connection', function(socket) {
 		var params 	= [data.user, data.contact, data.contact, data.user];
 		con.query(sql, params, function (err, result) {
     		if (err) throw err;
-    		// console.log(data.user);
 			io.emit('pass message', result, data.user);
   		});
 	});
