@@ -40,10 +40,18 @@ function newMessage() {
   if($.trim(message) == '') {
     return false;
   }
-  $('<li class="sent"><img src="http://emilcarlsson.se/assets/mikeross.png" alt="" /><p>' + message + '</p></li>').appendTo($('.messages ul'));
+
+  var data =  {
+    msg           :   message,
+    user_own      :   $('#profile .wrap > p').text(),
+    user_receive  :   $('li.active').find('.name').text()
+  };
+  socket.emit('chat message', data);
   $('.message-input input').val(null);
-  $('.contact.active .preview').html('<span>You: </span>' + message);
-  $(".messages").animate({ scrollTop: $(document).height() }, "fast");
+  return false;
+  // $('<li class="sent"><img src="http://emilcarlsson.se/assets/mikeross.png" alt="" /><p>' + message + '</p></li>').appendTo($('.messages ul'));
+  // $('.contact.active .preview').html('<span>You: </span>' + message);
+  // $(".messages").animate({ scrollTop: $(document).height() }, "fast");
 };
 
 $('.submit').click(function() {
@@ -61,7 +69,7 @@ $(window).on('keydown', function(e) {
 var contact = $('ul li.active').find('.name').text();
 $('.contact-profile p').text(contact)
 //active menu
-$('ul li.contact').click(function(e) {
+$('#contacts > ul > li.contact').on('click', function(e) {
   var contact = $(this).find('.name').text();
   $('li.contact').removeClass('active');
   $(this).addClass('active');
@@ -75,8 +83,42 @@ $('ul li.contact').click(function(e) {
 
   e.preventDefault();
 });
-socket.on('pass message', function(msg){
-  console.log(msg)
+socket.on('pass message', function(msg, user){
+  // console.log(msg)
     // $('.messages ul').append($('<li class="sent">').text(msg));
+    var html = '';
+    for (var i = 0; i < msg.length; i++) {
+      // console.log(msg[i]['user_own'])
+      console.log(user)
+      if (msg[i]['user_own'] == user) {
+        html += '<li class="sent">'+
+                  '<img src="http://emilcarlsson.se/assets/mikeross.png" alt="" />'+
+                  '<p>'+msg[i]['content']+'</p>'+
+                '</li>';
+      } else {
+        html += '<li class="replies">'+
+                  '<img src="http://emilcarlsson.se/assets/mikeross.png" alt="" />'+
+                  '<p>'+msg[i]['content']+'</p>'+
+                '</li>';
+      } 
+    }
+      
+    $('.messages ul').html(html);
 });
 
+socket.on('received message', function(msg, phone_login, user_receive){
+    var msg_class = '';
+    if (phone_login == $('#profile .wrap > p').text()) {
+      msg_class = 'sent';
+    } else {
+      msg_class = 'replies';
+    }
+    var html = '<li class="'+msg_class+'">'+
+                  '<img src="http://emilcarlsson.se/assets/mikeross.png" alt="" />'+
+                  '<p>'+msg+'</p>'+
+                '</li>';
+    $('.messages ul').append(html);
+    console.log(msg)
+    console.log($('.contact .pre_'+phone_login+'_'+user_receive+''))
+    $('.contact .pre_'+phone_login+'_'+user_receive+'').text(msg);
+});

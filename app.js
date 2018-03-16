@@ -138,7 +138,8 @@ io.sockets.on('connection', function(socket) {
 		var params 	= [data.user, data.contact, data.contact, data.user];
 		con.query(sql, params, function (err, result) {
     		if (err) throw err;
-			io.emit('pass message', result);
+    		// console.log(data.user);
+			io.emit('pass message', result, data.user);
   		});
 	});
 });
