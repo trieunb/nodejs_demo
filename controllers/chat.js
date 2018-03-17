@@ -1,6 +1,6 @@
 
 var socket = io();
-
+changeStatus();
 $(".messages").animate({ scrollTop: $('.messages').prop("scrollHeight")}, 1000);
 
 $("#profile-img").click(function() {
@@ -22,12 +22,16 @@ $("#status-options ul li").click(function() {
   
   if($("#status-online").hasClass("active")) {
     $("#profile-img").addClass("online");
+    $("#profile-img").attr("data-status", 1);
   } else if ($("#status-away").hasClass("active")) {
     $("#profile-img").addClass("away");
+    $("#profile-img").attr("data-status", 2);
   } else if ($("#status-busy").hasClass("active")) {
     $("#profile-img").addClass("busy");
+    $("#profile-img").attr("data-status", 3);
   } else if ($("#status-offline").hasClass("active")) {
     $("#profile-img").addClass("offline");
+    $("#profile-img").attr("data-status", 0);
   } else {
     $("#profile-img").removeClass();
   };
@@ -122,16 +126,28 @@ socket.on('received message', function(msg, phone_login, user_receive){
 $('#status-options ul li').on('click', function() {
   var status = $(this).data('status');
   var user   = $('#profile .wrap > p').text();
-  console.log(user);
   var data = {
     status  :   status,
     user    :   user
   };
   socket.emit('change status', data);
 });
+//logout
+$('#logout').on('click', function() {
+  var status = $('#profile-img').attr('data-status');
+  var user   = $('#profile .wrap > p').text();
+  var data = {
+    status  :   status,
+    user    :   user
+  };
+  // console.log(data);
+  socket.emit('user logout', data);
+  window.location.href = '/login';
+});
 //change status when have emit
-socket.on('pass status', function(data) {
-    var status = getStatus(data.status);
+socket.on('pass status', function(data, is_login) {
+    var status = getStatus(data.status, is_login);
+    console.log(status)
     if (data.user == $('#profile .wrap > p').text()) {
       $('#profile-img').addClass(status);
     } else {
@@ -144,18 +160,29 @@ socket.on('pass status', function(data) {
     }
 });
 
-function getStatus(status) {
-  if(status == 1) {
-    status = 'online';
+function getStatus(status, is_login) {
+  var class_status = 'offline';
+  if(status == 1 && is_login == 1) {
+    class_status = 'online';
   }
-  if(status == 2) {
-    status = 'away';
+  if(status == 2 && is_login == 1) {
+    class_status = 'away';
   }
-  if(status == 3) {
-    status = 'busy';
+  if(status == 3 && is_login == 1) {
+    class_status = 'busy';
   }
-  if(status == 4 || status == 0) {
-    status = 'offline';
+  if(status == 0  && is_login == 1) {
+    class_status = 'offline';
   }
-  return status;
+  return class_status;
+}
+function changeStatus() {
+  var status = $("#profile-img").attr('data-status');
+  var user   = $('#profile .wrap > p').text();
+  console.log(user);
+  var data = {
+    status  :   status,
+    user    :   user
+  };
+  socket.emit('change status', data);
 }

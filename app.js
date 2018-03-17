@@ -30,6 +30,14 @@ app.set('views', path.join(__dirname, 'views'));
 // app.use('/', router);
 // var sess;
 app.get('/login', function(req, res) {
+	var phone_login	=	req.cookies['userCookie'];
+	if (typeof phone_login !== 'undefined') {
+		// var sql = "UPDATE tb_user SET is_login = '0' WHERE user_id = ?";
+  //   	con.query(sql, [phone_login], function(err, result) {
+  //   		if (err) throw err;
+  //   	});
+    	res.clearCookie("userCookie");
+	}
 	res.render('login');
 })
 
@@ -44,7 +52,7 @@ app.post('/login', function(req, res) {
 	    		if (err) throw err;
 	    	});
 	    	res.cookie('userCookie', result[0].user_id);
-	    	res.cookie('statusCookie', result[0].status);
+	    	// res.cookie('statusCookie', result[0].status);
 			return res.redirect('/chat');
 		}
 		res.redirect('/login');
@@ -60,6 +68,10 @@ app.get('/chat', function(req, res) {
 	if (typeof phone_login !== 'undefined') {
 		con.query(sql, params, function (err, result, fields) {
 		    if (err) throw err;
+		    var sql = "UPDATE tb_user SET is_login = '1' WHERE user_id = ?";
+	    	con.query(sql, [phone_login], function(err, result) {
+	    		if (err) throw err;
+	    	});
 		    obj 	= removeDuplicates(result, 'user_id')
 		    user 	= getUserLogin(result, phone_login);
 		    // console.log(user);
@@ -163,11 +175,22 @@ io.sockets.on('connection', function(socket) {
 	});
 	//change status for user login
 	socket.on('change status', function(data) {
-		var sql = "UPDATE tb_user SET status = ? WHERE user_id = ?";
-		var params = [data.status, data.user];
+		var sql = "UPDATE tb_user SET status = ? WHERE user_id = ?; SELECT * FROM tb_user WHERE user_id = ?";
+		var params = [data.status, data.user, data.user];
 		con.query(sql, params, function (err, result) {
     		if (err) throw err;
-    		io.emit('pass status', data)
+    		var is_login = result[1][0].is_login;
+    		io.emit('pass status', data, is_login)
+  		});
+	});
+	//logout
+	socket.on('user logout', function(data) {
+		var sql = "UPDATE tb_user SET is_login = 0 WHERE user_id = ?; SELECT * FROM tb_user WHERE user_id = ?";
+		var params = [data.user, data.user];
+		con.query(sql, params, function (err, result) {
+    		if (err) throw err;
+    		var is_login = result[1][0].is_login;
+    		io.emit('pass status', data, is_login)
   		});
 	});
 });

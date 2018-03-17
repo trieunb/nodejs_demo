@@ -18,19 +18,20 @@
       <div id="sidepanel">
         <div id="profile">
           <div class="wrap">
+            <% var class_status = 'offline' %>
             <% if(status == 1) { %>
-              <% status = 'online' %>
+              <% class_status = 'online' %>
             <% } %>
             <% if(status == 2) { %>
-              <% status = 'away' %>
+              <% class_status = 'away' %>
             <% } %>
             <% if(status == 3) { %>
-              <% status = 'busy' %>
+              <% class_status = 'busy' %>
             <% } %>
             <% if(status == 0) { %>
-              <% status = 'offline' %>
+              <% class_status = 'offline' %>
             <% } %>
-            <img id="profile-img" src="http://emilcarlsson.se/assets/mikeross.png" class="<%= status %>" alt="" />
+            <img id="profile-img" src="http://emilcarlsson.se/assets/mikeross.png" class="<%= class_status %>" alt="" / data-status="<%= status %>">
             <p><%= user %></p>
             <i class="fa fa-chevron-down expand-button" aria-hidden="true"></i>
             <div id="status-options">
@@ -65,18 +66,20 @@
                 <% act = 'active' %>
               <% } %>
               <!-- get status of user -->
-              <% var status = '' %>
-              <% if(phones[i].status == 1) { %>
-                <% status = 'online' %>
-              <% } %>
-              <% if(phones[i].status == 2) { %>
-                <% status = 'away' %>
-              <% } %>
-              <% if(phones[i].status == 3) { %>
-                <% status = 'busy' %>
-              <% } %>
-              <% if(phones[i].status == 0) { %>
-                <% status = 'offline' %>
+              <% var status = 'offline' %>
+              <% if(phones[i].is_login == 1) { %>
+                <% if(phones[i].status == 1) { %>
+                  <% status = 'online' %>
+                <% } %>
+                <% if(phones[i].status == 2) { %>
+                  <% status = 'away' %>
+                <% } %>
+                <% if(phones[i].status == 3) { %>
+                  <% status = 'busy' %>
+                <% } %>
+                <% if(phones[i].status == 0) { %>
+                  <% status = 'offline' %>
+                <% } %>
               <% } %>
               <% if(phone !== user) { %>
               <li class="contact <%= act %>">
@@ -95,7 +98,7 @@
         </div>
         <div id="bottom-bar">
           <button id="addcontact"><i class="fa fa-user-plus fa-fw" aria-hidden="true"></i> <span>Add contact</span></button>
-          <button id="settings"><i class="fa fa-cog fa-fw" aria-hidden="true"></i> <span>Settings</span></button>
+          <button id="logout"><i class="fa fa-cog fa-fw" aria-hidden="true"></i> <span>logout</span></button>
         </div>
       </div>
       <div class="content">
