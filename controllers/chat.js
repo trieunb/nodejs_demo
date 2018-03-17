@@ -1,7 +1,6 @@
 
 var socket = io();
 
-// $(".messages").animate({ scrollTop: $(document).height() }, "fast");
 $(".messages").animate({ scrollTop: $('.messages').prop("scrollHeight")}, 1000);
 
 $("#profile-img").click(function() {
@@ -49,8 +48,6 @@ function newMessage() {
   };
   socket.emit('chat message', data);
   $('.message-input input').val(null);
-  // $('<li class="sent"><img src="http://emilcarlsson.se/assets/mikeross.png" alt="" /><p>' + message + '</p></li>').appendTo($('.messages ul'));
-  // $('.contact.active .preview').html('<span>You: </span>' + message);
   $(".messages").animate({ scrollTop: $('.messages').prop("scrollHeight")}, 1000);
 };
 
@@ -105,7 +102,7 @@ socket.on('pass message', function(msg, user){
       
     $('.messages ul').html(html);
 });
-
+//receive message
 socket.on('received message', function(msg, phone_login, user_receive){
     var msg_class = '';
     if (phone_login == $('#profile .wrap > p').text()) {
@@ -121,3 +118,44 @@ socket.on('received message', function(msg, phone_login, user_receive){
     $('.contact .pre_'+phone_login+'_'+user_receive+'').text(msg);
     $(".messages").animate({ scrollTop: $('.messages').prop("scrollHeight")}, 1000);
 });
+//change status of user login
+$('#status-options ul li').on('click', function() {
+  var status = $(this).data('status');
+  var user   = $('#profile .wrap > p').text();
+  console.log(user);
+  var data = {
+    status  :   status,
+    user    :   user
+  };
+  socket.emit('change status', data);
+});
+//change status when have emit
+socket.on('pass status', function(data) {
+    var status = getStatus(data.status);
+    if (data.user == $('#profile .wrap > p').text()) {
+      $('#profile-img').addClass(status);
+    } else {
+      $('#contacts ul li').each(function() {
+        if (data.user == $(this).find('.name').text()) {
+          $(this).find('.contact-status').removeClass();
+          $(this).find('.wrap span').addClass('contact-status '+status);
+        }
+      });
+    }
+});
+
+function getStatus(status) {
+  if(status == 1) {
+    status = 'online';
+  }
+  if(status == 2) {
+    status = 'away';
+  }
+  if(status == 3) {
+    status = 'busy';
+  }
+  if(status == 4 || status == 0) {
+    status = 'offline';
+  }
+  return status;
+}

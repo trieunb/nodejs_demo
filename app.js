@@ -39,7 +39,12 @@ app.post('/login', function(req, res) {
 	con.query(sql, [phone], function (err, result, fields) {
 	    if (err) throw err;
 	    if (result.length != 0 && result[0].user_id !== '') {
-	    	res.cookie('userCookie', result[0].user_id)
+	    	var sql = "UPDATE tb_user SET is_login = '1' WHERE user_id = ?";
+	    	con.query(sql, [result[0].user_id], function(err, result) {
+	    		if (err) throw err;
+	    	});
+	    	res.cookie('userCookie', result[0].user_id);
+	    	res.cookie('statusCookie', result[0].status);
 			return res.redirect('/chat');
 		}
 		res.redirect('/login');
@@ -49,19 +54,26 @@ app.post('/login', function(req, res) {
 app.get('/chat', function(req, res) {
 	var phone_login	=	req.cookies['userCookie'];
 	var sql 		= "SELECT * FROM tb_user " + 
-					"LEFT JOIN tb_message ON (user_id = user_own) " + 
-					"WHERE NOT user_id = ?"; 
+					"LEFT JOIN tb_message ON (user_id = user_own) "; 
+					// "WHERE NOT user_id = ?"; 
 	var params 	=	[phone_login];
 	if (typeof phone_login !== 'undefined') {
 		con.query(sql, params, function (err, result, fields) {
 		    if (err) throw err;
-		    obj = removeDuplicates(result, 'user_id')
+		    obj 	= removeDuplicates(result, 'user_id')
+		    user 	= getUserLogin(result, phone_login);
+		    // console.log(user);
 			res.render('chat', {
 				phones 	: obj,
-				user 	: phone_login
+				user 	: phone_login,
+				status 	: user.status
 			});	
 		});
 	} else {
+		var sql = "UPDATE tb_user SET is_login = '0' WHERE user_id = ?";
+    	con.query(sql, params, function(err, result) {
+    		if (err) throw err;
+    	});
 		return res.redirect('/login');
 	}
 })
@@ -97,18 +109,28 @@ app.get('/message/:phoneId', function(req, res) {
 });
 
 function removeDuplicates(originalArray, prop) {
-     var newArray = [];
-     var lookupObject  = {};
+    var newArray = [];
+    var lookupObject  = {};
 
-     for(var i in originalArray) {
-        lookupObject[originalArray[i][prop]] = originalArray[i];
-     }
+    for(var i in originalArray) {
+       lookupObject[originalArray[i][prop]] = originalArray[i];
+    }
 
-     for(i in lookupObject) {
-         newArray.push(lookupObject[i]);
-     }
-      return newArray;
- }
+    for(i in lookupObject) {
+        newArray.push(lookupObject[i]);
+    }
+    return newArray;
+}
+
+function getUserLogin(userLists, user) {
+	var user_login = {};
+	for (var i in userLists) {
+		if (userLists[i]['user_id'] == user) {
+			user_login	=	userLists[i]; 
+		}
+	}
+	return user_login;
+}
 
 // app.listen(8081, function() {
 // 	console.log('Hello express');
@@ -128,7 +150,7 @@ io.sockets.on('connection', function(socket) {
   		});
 		io.emit('received message', data.msg, data.user_own, data.user_receive);
 	});
-
+	//load content message chat
 	socket.on('load message', function(data) {
 		var sql 	= "SELECT * FROM tb_message " + 
 					"WHERE (user_own = ? OR user_own = ?) " + 
@@ -137,6 +159,15 @@ io.sockets.on('connection', function(socket) {
 		con.query(sql, params, function (err, result) {
     		if (err) throw err;
 			io.emit('pass message', result, data.user);
+  		});
+	});
+	//change status for user login
+	socket.on('change status', function(data) {
+		var sql = "UPDATE tb_user SET status = ? WHERE user_id = ?";
+		var params = [data.status, data.user];
+		con.query(sql, params, function (err, result) {
+    		if (err) throw err;
+    		io.emit('pass status', data)
   		});
 	});
 });
