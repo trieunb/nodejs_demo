@@ -14,14 +14,17 @@
 		    <div class="row">
 		        <div class="col-md-12">
 		            <div class="pr-wrap">
-		                <div class="pass-reset">
-		                    <label>
-		                        Enter the email you signed up with</label>
-		                    <input type="email" placeholder="Email" />
-		                    <input type="submit" value="Submit" class="pass-reset-submit btn btn-success btn-sm" />
-		                </div>
+		            	<!-- <form class="register" action="" method="POST" role="form"> -->
+			                <div class="pass-reset">
+			                    <label>
+			                        Enter the email or phone you signed up with</label>
+			                    <input type="email" placeholder="Email" class="username" name="username" />
+			                    <input type="button" id="sign-up" value="SIGN UP" class="pass-reset-submit btn btn-success btn-sm" />
+			                </div>
+		                <!-- </form> -->
 		            </div>
 		            <div class="wrap">
+		            	<p class="title-error"><%= msg_error %></p>
 		                <p class="form-title">Sign In</p>
 		                <form class="login" action="/login" method="POST" role="form">
 		                	<input type="text" placeholder="Username" id="phone" name="phone">
@@ -31,7 +34,7 @@
 		                <div class="remember-forgot">
 		                    <div class="row">
 		                        <div class="col-md-6 pull-right forgot-pass-content">
-		                            <a href="javascription:void(0)" class="forgot-pass">Forgot Password</a>
+		                            <a href="javascription:void(0)" class="forgot-pass">Register</a>
 		                        </div>
 		                    </div>
 		                </div>

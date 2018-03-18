@@ -38,7 +38,9 @@ app.get('/login', function(req, res) {
   //   	});
     	res.clearCookie("userCookie");
 	}
-	res.render('login');
+	res.render('login', {
+			msg_error : ''
+		});
 })
 
 app.post('/login', function(req, res) {
@@ -46,6 +48,7 @@ app.post('/login', function(req, res) {
 	var sql 	=	"SELECT * FROM tb_user WHERE user_id = ?";
 	con.query(sql, [phone], function (err, result, fields) {
 	    if (err) throw err;
+	    console.log(result);
 	    if (result.length != 0 && result[0].user_id !== '') {
 	    	var sql = "UPDATE tb_user SET is_login = '1' WHERE user_id = ?";
 	    	con.query(sql, [result[0].user_id], function(err, result) {
@@ -55,7 +58,38 @@ app.post('/login', function(req, res) {
 	    	// res.cookie('statusCookie', result[0].status);
 			return res.redirect('/chat');
 		}
-		res.redirect('/login');
+		res.render('login', {
+			msg_error : 'Username incorrect'
+		});
+	});
+});
+
+app.post('/register', function(req, res) {
+	var userName = req.body.username;
+	console.log(userName);
+	if (userName == '') {
+		return res.send({
+				res 		: false, 
+				msg_success : "Username is not empty"
+			});
+	}
+	var sql = "INSERT INTO tb_user (user_id, name) VALUES ?"
+	var values = [[userName, 'no name']];
+	con.query(sql, [values], function(err, result) {
+		if (err) {
+			// throw err;
+			res.send({
+				res 		: false, 
+				msg_success : "Username is already in use. Please choose another one."
+			});
+		} else {
+			console.log(result);
+			res.send({
+				res 		: true, 
+				unsername 	: req.body.username,
+				msg_success : "Register Successful"
+			});
+		}
 	});
 });
 

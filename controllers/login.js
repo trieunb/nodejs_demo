@@ -5,5 +5,20 @@
     
     $('.pass-reset-submit').click(function(event) {
       $(".pr-wrap").removeClass("show-pass-reset");
-    }); 
+    });
+
+    $('#sign-up').on('click', function() {
+    	var username = $('.username').val();
+    	$.ajax({
+                url: '/register',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    username: username,
+                },
+                success: function(res) {
+                	$('.title-error').text(res.msg_success);
+                }
+            });
+    });
 });

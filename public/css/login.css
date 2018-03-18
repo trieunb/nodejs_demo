@@ -28,7 +28,20 @@ p.form-title
     text-transform: uppercase;
     letter-spacing: 4px;
 }
-
+p.title-error
+{
+    font-family: 'Open Sans' , sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+    color: #FFFFFF;
+    margin-top: 5px;
+    /*text-transform: uppercase;*/
+    /*letter-spacing: 4px;*/
+}
+#sign-up {
+    width: 100%;
+}
 form
 {
     width: 250px;
