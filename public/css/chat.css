@@ -612,6 +612,14 @@ body {
 }
 #frame .content .message-input .wrap {
   position: relative;
+      width: 86%;
+    bottom: 0;
+    float: left;
+    height: 20px;
+}
+.btn-function {
+    width: 10%;
+    float: right;
 }
 #frame .content .message-input .wrap #input-chat {
   font-family: "proxima-nova",  "Source Sans Pro", sans-serif;
@@ -630,7 +638,7 @@ body {
 #frame .content .message-input .wrap input:focus {
   outline: none;
 }
-#frame .content .message-input .wrap .attachment {
+#frame .content .message-input .btn-function .attachment {
   position: absolute;
   right: 60px;
   z-index: 4;
@@ -641,15 +649,15 @@ body {
   cursor: pointer;
 }
 @media screen and (max-width: 735px) {
-  #frame .content .message-input .wrap .attachment {
+  #frame .content .message-input .btn-function .attachment {
     margin-top: 17px;
     right: 65px;
   }
 }
-#frame .content .message-input .wrap .attachment:hover {
+#frame .content .message-input .btn-function .attachment:hover {
   opacity: 1;
 }
-#frame .content .message-input .wrap button {
+#frame .content .message-input .btn-function button {
   float: right;
   border: none;
   width: 50px;
@@ -659,14 +667,14 @@ body {
   color: #f5f5f5;
 }
 @media screen and (max-width: 735px) {
-  #frame .content .message-input .wrap button {
+  #frame .content .message-input .btn-function button {
     padding: 16px 0;
   }
 }
-#frame .content .message-input .wrap button:hover {
+#frame .content .message-input .btn-function button:hover {
   background: #435f7a;
 }
-#frame .content .message-input .wrap button:focus {
+#frame .content .message-input .btn-function button:focus {
   outline: none;
 }
 .wrap-content {

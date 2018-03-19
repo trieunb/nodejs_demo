@@ -1,14 +1,6 @@
 
 var socket = io();
 changeStatus();
-$("#input-chat").emojioneArea({
-    pickerPosition: "top",
-    filtersPosition: "bottom",
-    tones: false,
-    autocomplete: false,
-    inline: true,
-    hidePickerOnBlur: false
-  });
 
 $(".messages").animate({ scrollTop: $('.messages').prop("scrollHeight")}, 1000);
 
@@ -48,32 +40,66 @@ $("#status-options ul li").click(function() {
   $("#status-options").removeClass("active");
 });
 
-function newMessage() {
-  message = $(".message-input #input-chat").val();
+var emoji = $("#input-chat").emojioneArea();
+$("#input-chat").emojioneArea({
+    pickerPosition: "top",
+    filtersPosition: "bottom",
+    tones: false,
+    autocomplete: false,
+    inline: true,
+    hidePickerOnBlur: false,
+  });
+
+// emoji[0].emojioneArea.on("emojibtn.click", function(btn) {
+//   console.log(btn.html());
+// });
+
+var newMessage = function(button, event) {
+  var message = button.html();
+  console.log(message);
   if($.trim(message) == '') {
     return false;
   }
-
-  var data =  {
-    msg           :   message,
-    user_own      :   $('#profile .wrap > p').text(),
-    user_receive  :   $('li.active').find('.name').text()
-  };
-  socket.emit('chat message', data);
-  $('.message-input #input-chat').val(null);
+  if (event.which == 13) {
+    var data =  {
+      msg           :   message,
+      user_own      :   $('#profile .wrap > p').text(),
+      user_receive  :   $('li.active').find('.name').text()
+    };
+    socket.emit('chat message', data);
+    // emoji[0].emojioneArea.setText('');
+    $('.emojionearea-editor').html('')
+  }
   $(".messages").animate({ scrollTop: $('.messages').prop("scrollHeight")}, 1000);
 };
+
+emoji[0].emojioneArea.on("keydown", newMessage);
+// function newMessage() {
+//   message = $(".message-input #input-chat").val();
+//   if($.trim(message) == '') {
+//     return false;
+//   }
+
+//   var data =  {
+//     msg           :   message,
+//     user_own      :   $('#profile .wrap > p').text(),
+//     user_receive  :   $('li.active').find('.name').text()
+//   };
+//   socket.emit('chat message', data);
+//   $('.message-input #input-chat').val(null);
+//   $(".messages").animate({ scrollTop: $('.messages').prop("scrollHeight")}, 1000);
+// };
 
 $('.submit').click(function() {
   newMessage();
 });
 
-$(window).on('keydown', function(e) {
-  if (e.which == 13) {
-    newMessage();
-    return false;
-  }
-});
+// $(window).on('keydown', function(e) {
+//   if (e.which == 13) {
+//     newMessage();
+//     return false;
+//   }
+// });
 
 //load infor chat first
 // var contact = $('ul li.active').find('.name').text();
