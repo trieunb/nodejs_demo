@@ -613,7 +613,7 @@ body {
 #frame .content .message-input .wrap {
   position: relative;
 }
-#frame .content .message-input .wrap input {
+#frame .content .message-input .wrap #input-chat {
   font-family: "proxima-nova",  "Source Sans Pro", sans-serif;
   float: left;
   border: none;
@@ -623,7 +623,7 @@ body {
   color: #32465a;
 }
 @media screen and (max-width: 735px) {
-  #frame .content .message-input .wrap input {
+  #frame .content .message-input .wrap #input-chat {
     padding: 15px 32px 16px 8px;
   }
 }
@@ -668,4 +668,15 @@ body {
 }
 #frame .content .message-input .wrap button:focus {
   outline: none;
+}
+.wrap-content {
+    float: right;
+    width: calc(100% - 340px);
+    height: 100%;
+}
+.wrap-content p {
+    text-align: center;
+    margin-top: 20%;
+    font-size: 20;
+    font-weight: 600;
 }

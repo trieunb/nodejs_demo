@@ -1,6 +1,15 @@
 
 var socket = io();
 changeStatus();
+$("#input-chat").emojioneArea({
+    pickerPosition: "top",
+    filtersPosition: "bottom",
+    tones: false,
+    autocomplete: false,
+    inline: true,
+    hidePickerOnBlur: false
+  });
+
 $(".messages").animate({ scrollTop: $('.messages').prop("scrollHeight")}, 1000);
 
 $("#profile-img").click(function() {
@@ -40,7 +49,7 @@ $("#status-options ul li").click(function() {
 });
 
 function newMessage() {
-  message = $(".message-input input").val();
+  message = $(".message-input #input-chat").val();
   if($.trim(message) == '') {
     return false;
   }
@@ -51,7 +60,7 @@ function newMessage() {
     user_receive  :   $('li.active').find('.name').text()
   };
   socket.emit('chat message', data);
-  $('.message-input input').val(null);
+  $('.message-input #input-chat').val(null);
   $(".messages").animate({ scrollTop: $('.messages').prop("scrollHeight")}, 1000);
 };
 
@@ -67,10 +76,12 @@ $(window).on('keydown', function(e) {
 });
 
 //load infor chat first
-var contact = $('ul li.active').find('.name').text();
-$('.contact-profile p').text(contact)
+// var contact = $('ul li.active').find('.name').text();
+// $('.contact-profile p').text(contact)
 //active menu
 $('#contacts > ul > li.contact').on('click', function(e) {
+ $('.wrap-content').addClass('hidden'); 
+ $('.content').removeClass('hidden'); 
   var contact = $(this).find('.name').text();
   $('li.contact').removeClass('active');
   $(this).addClass('active');
@@ -93,12 +104,12 @@ socket.on('pass message', function(msg, user){
       console.log(user)
       if (msg[i]['user_own'] == user) {
         html += '<li class="sent">'+
-                  '<img src="http://emilcarlsson.se/assets/mikeross.png" alt="" />'+
+                  '<img src="/images/no-avatar_1.png" alt="" />'+
                   '<p>'+msg[i]['content']+'</p>'+
                 '</li>';
       } else {
         html += '<li class="replies">'+
-                  '<img src="http://emilcarlsson.se/assets/mikeross.png" alt="" />'+
+                  '<img src="/images/no-avatar_1.png" alt="" />'+
                   '<p>'+msg[i]['content']+'</p>'+
                 '</li>';
       } 
@@ -115,7 +126,7 @@ socket.on('received message', function(msg, phone_login, user_receive){
       msg_class = 'replies';
     }
     var html = '<li class="'+msg_class+'">'+
-                  '<img src="http://emilcarlsson.se/assets/mikeross.png" alt="" />'+
+                  '<img src="/images/no-avatar_1.png" alt="" />'+
                   '<p>'+msg+'</p>'+
                 '</li>';
     $('.messages ul').append(html);

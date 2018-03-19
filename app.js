@@ -32,10 +32,10 @@ app.set('views', path.join(__dirname, 'views'));
 app.get('/login', function(req, res) {
 	var phone_login	=	req.cookies['userCookie'];
 	if (typeof phone_login !== 'undefined') {
-		// var sql = "UPDATE tb_user SET is_login = '0' WHERE user_id = ?";
-  //   	con.query(sql, [phone_login], function(err, result) {
-  //   		if (err) throw err;
-  //   	});
+		var sql = "UPDATE tb_user SET is_login = '0' WHERE user_id = ?";
+    	con.query(sql, [phone_login], function(err, result) {
+    		if (err) throw err;
+    	});
     	res.clearCookie("userCookie");
 	}
 	res.render('login', {

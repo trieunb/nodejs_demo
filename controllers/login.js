@@ -1,4 +1,6 @@
+ var socket = io();
  $(document).ready(function () {
+
     $('.forgot-pass').click(function(event) {
       $(".pr-wrap").toggleClass("show-pass-reset");
     }); 

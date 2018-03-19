@@ -42,6 +42,9 @@ p.title-error
 #sign-up {
     width: 100%;
 }
+a.forgot-pass {
+    margin-left: 55px;
+}
 form
 {
     width: 250px;
